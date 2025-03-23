@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:15.6
+    container_name: collab-nextjs-db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=collab
+      - POSTGRES_USER=collab
+      - POSTGRES_PASSWORD=collab
+    volumes:
+      - collab_nextjs_db:/var/lib/postgresql/data
+
+  app:
+    container_name: collab-nextjs
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - FOLDER_DATA
+    environment:
+      - DATABASE_URL=postgresql://collab:collab@db:5432/collab?schema=public
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    volumes:
+      - collab_nextjs_data:/app/${FOLDER_DATA}
+
+volumes:
+  collab_nextjs_db:
+  collab_nextjs_data:

@@ -1,0 +1,16 @@
+name: collab-nextjs
+services:
+  postgres:
+    image: postgres:15.6
+    container_name: collab-nextjs-db
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_DB=collab
+      - POSTGRES_USER=collab
+      - POSTGRES_PASSWORD=collab
+    volumes:
+      - collab_nextjs_data_db:/var/lib/postgresql/data
+
+volumes:
+  collab_nextjs_data_db:

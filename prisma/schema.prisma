@@ -1,0 +1,161 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum FileType {
+  FILE
+  FOLDER
+}
+
+model File {
+  id          String    @id
+  name        String
+  type        FileType
+  extension   String?
+  path        String
+  size        Int?
+  children    File[]    @relation("ParentChild")
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String
+  owner       User      @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId     String
+  parent      File?     @relation("ParentChild", fields: [parentId], references: [id], onDelete: Cascade)
+  parentId    String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([name, parentId, workspaceId, type, extension])
+}
+
+model Workspace {
+  id         String            @id @default(cuid())
+  name       String
+  owner      User              @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  ownerId    String
+  isPersonal Boolean           @default(false)
+  members    UserOnWorkspace[]
+
+  files      File[]
+  invitation Invitation[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Permission {
+  name           PermissionTag    @id
+  rolePermission RolePermission[]
+}
+
+model RolePermission {
+  permission    Permission    @relation(fields: [permissionTag], references: [name], onDelete: Cascade)
+  permissionTag PermissionTag
+
+  role   Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId Int
+
+  @@id([roleId, permissionTag], name: "id")
+}
+
+model Role {
+  id   Int    @unique @default(autoincrement())
+  name String @id
+
+  users          UserOnWorkspace[]
+  rolePermission RolePermission[]
+  Invitation     Invitation[]
+
+  @@unique([id, name])
+}
+
+model UserOnWorkspace {
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String
+  role        Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId      Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([userId, workspaceId], name: "id")
+}
+
+model Invitation {
+  email       String
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  workspaceId String
+  role        Role      @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  roleId      Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@id([email, workspaceId], name: "id")
+}
+
+enum PermissionTag {
+  READ
+  WRITE
+  INVITE
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String   @unique
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  emailVerified Boolean
+  image         String?
+  createdAt     DateTime
+  updatedAt     DateTime
+
+  Sessions        Session[]
+  Accounts        Account[]
+  File            File[]
+  Workspace       Workspace[]
+  UserOnWorkspace UserOnWorkspace[]
+}
