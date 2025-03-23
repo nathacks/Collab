@@ -2,6 +2,15 @@
 
 ![GitHub Banner](public/image/github.jpg)
 
+![Next.js](https://img.shields.io/badge/Next.js_15-000000?style=for-the-badge&logo=nextdotjs&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=Prisma&logoColor=white)
+![shadcn/ui](https://img.shields.io/badge/shadcn/ui-000000?style=for-the-badge&logo=shadcn/ui&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-grey?style=for-the-badge&logo=tailwind-css&logoColor=38B2AC)
+![Better Auth](https://img.shields.io/badge/BetterAuth-Authentication-blueviolet?style=for-the-badge)
+![TypeScript](https://img.shields.io/badge/TypeScript-TypeSafety-blue?style=for-the-badge&logo=typescript)
+![Docker](https://img.shields.io/badge/Docker-Containerization-2496ED?style=for-the-badge&logo=docker)
+
+
 This project is a [Next.js](https://nextjs.org) application initialized with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app) and using [Prisma](https://www.prisma.io/) for database management. It also integrates [shadcn](https://ui.shadcn.com/) for UI components and [Better Auth](https://betterauth.dev/) for authentication.
 
 ## Project Overview
