@@ -9,7 +9,6 @@ export const TOOLS_AI = (workspaceId: string, parentId: string | null) => ({
         parameters: TOOLS_CREATE_FILE,
         execute: async ({ name, extension }) => {
             try {
-                await new Promise(resolve => setTimeout(resolve, 5000));
                 const newFile = await createFileWithPerm(workspaceId, name, extension, parentId)
                 return {
                     data: newFile

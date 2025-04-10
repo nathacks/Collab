@@ -9,7 +9,6 @@ export const GET = authRouteServer
     .query(GetFileFolderByInputApiQuerySchema)
     .handler(async (_req, { query: { nameFileOrFolder } }) => {
         try {
-            await new Promise(resolve => setTimeout(resolve, 2000));
             const resFileFolder = await getFileFolderByInputWithPerm(nameFileOrFolder);
             return NextResponse.json(resFileFolder);
         } catch (error) {
